@@ -9,10 +9,11 @@
 #include <cstring> // strlen
 #include <string>
 
+
 using namespace std;
 int main()
 {
-    const char* wordList[] = { "Cat", "Smartphone", "Bagley", "Space" };
+    const char* wordList[] = { "Catt", "Smarttphone", "Baggley", "Sppace" };
     int iWrongGuesses = 8;
     char alphabet[] = { "abcdefghijklmnopqrstuvwxyz" };
     char* cHiddenWord = nullptr;
@@ -23,6 +24,7 @@ int main()
     int iAvailableAlphabet = 0;
     int iGuessedL = 0;
     int rand = 0;
+    int iWrongWordStatus = 0;
 
     //Random int generator in range
     random_device rd;
@@ -43,7 +45,7 @@ int main()
     char* tempChar = cHiddenWord;
     while (*tempChar) {
         *tempChar = '-';
-        *tempChar++;
+        tempChar++;
     }
     cout << cFullWord << endl;
     cout << cHiddenWord << endl;
@@ -57,18 +59,39 @@ int main()
 
         cout << "Enter your letter/s: " ;
         cin >> sUserInput;
+
+        tempChar = cFullWord;
+        char* tempCharH = cHiddenWord;
+        char* tempCharA = alphabet;
         for (char const& c : sUserInput) {
-            char* tempChar = cFullWord;
+            tempChar = cFullWord;
+            tempCharH = cHiddenWord;
+            tempCharA = alphabet;
             while (*tempChar) {
                 if (*tempChar == c) {
-                    cout << "Test" << endl;
+                    *tempCharH = c;
+                    iGuessedL++;
+                    while ((*tempCharA != c) && *tempCharA) {
+                        tempCharA++;
+                    }
+                    if (*tempCharA) {
+                        *tempCharA = '-';
+                    }
+                    tempCharA = alphabet;
                 }
-                *tempChar++;
+                tempChar++;
+                tempCharH++;
+            }
+            if (iWrongWordStatus == 1) {
+                iWrongGuesses--;
             }
         }
         
+        //This would close the program when all letters have been guessed
+        if ((iGuessedL == iTotalLetters) || (iWrongGuesses == 0) ) {
+            return 0;
+        }      
     }
-
     return 0;
 }
 
