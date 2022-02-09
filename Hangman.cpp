@@ -16,10 +16,12 @@ int main()
     int iWrongGuesses = 8;
     char alphabet[] = { "abcdefghijklmnopqrstuvwxyz" };
     char* cHiddenWord = nullptr;
+    char* cFullWord = nullptr;
     string sUserInput;
 
     int iTotalLetters = 0;
     int iAvailableAlphabet = 0;
+    int iGuessedL = 0;
     int rand = 0;
 
     //Random int generator in range
@@ -32,40 +34,40 @@ int main()
     iAvailableAlphabet = strlen(alphabet);
     iTotalLetters = strlen(wordList[rand]);
     
-    cHiddenWord = (char*)malloc(sizeof(char) * (iTotalLetters + 1));
-    
-    char* cFullWord = new char[iTotalLetters + 1];
+    cHiddenWord = new char[iTotalLetters + 1];
+    cFullWord = new char[iTotalLetters + 1];
     strcpy_s(cFullWord, iTotalLetters + 1, wordList[rand]);
+    strcpy_s(cHiddenWord, iTotalLetters + 1, wordList[rand]);
     
-    char* tempChar = cFullWord;
-
-    cout << cFullWord << "\n";
-    cout << *(tempChar+1); //This works
-    
-
-    /*
-    char* tempChar = cFullWord;
-    while (tempChar) {
-        cout << *tempChar;
+    //cout << *(tempCharA+1); //This works
+    char* tempChar = cHiddenWord;
+    while (*tempChar) {
+        *tempChar = '-';
         *tempChar++;
     }
-    
+    cout << cFullWord << endl;
+    cout << cHiddenWord << endl;
     
     while (iWrongGuesses != 0) {
-        cout << "Enter your letter/s: " << endl;
+
+        cout << "Guess a letter for the word: \"" << cHiddenWord << "\"" << endl;
+        cout << "You have " << iWrongGuesses << " wrong guesses left, and have guessed "
+            << iGuessedL << " letters out of " << iTotalLetters << " so far." << endl;
+        cout << "Available letters are: " << alphabet << endl;
+
+        cout << "Enter your letter/s: " ;
         cin >> sUserInput;
         for (char const& c : sUserInput) {
-            cout << c << ' ';
+            char* tempChar = cFullWord;
+            while (*tempChar) {
+                if (*tempChar == c) {
+                    cout << "Test" << endl;
+                }
+                *tempChar++;
+            }
         }
-
-        cout << "Guess a letter for the word: " << "" << "/n";
-        cout << "You have " << iWrongGuesses << " wrong guesses left, and have guessed "
-            << iGuessedL << " letters out of " << iTotalLetters << " so far.";
-        cout << "Available letters are: " << iAvailableLetters;
-
+        
     }
-    */
-    
 
     return 0;
 }
