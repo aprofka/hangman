@@ -1,6 +1,10 @@
 // Hangman.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
 #include <iostream>
 #include <random>
 #include <cstdio> // printf
@@ -9,11 +13,10 @@
 #include <cstring> // strlen
 #include <string>
 
-
 using namespace std;
 int main()
 {
-    const char* wordList[] = { "Catt", "Smarttphone", "Baggley", "Sppace" };
+    const char* wordList[] = { "catt", "smarttphone", "baggley", "sppace" };
     int iWrongGuesses = 8;
     char alphabet[] = { "abcdefghijklmnopqrstuvwxyz" };
     char* cHiddenWord = nullptr;
@@ -24,7 +27,7 @@ int main()
     int iAvailableAlphabet = 0;
     int iGuessedL = 0;
     int rand = 0;
-    int iWrongWordStatus = 0;
+    int iWrongWordStatus = 1;
 
     //Random int generator in range
     random_device rd;
@@ -41,7 +44,6 @@ int main()
     strcpy_s(cFullWord, iTotalLetters + 1, wordList[rand]);
     strcpy_s(cHiddenWord, iTotalLetters + 1, wordList[rand]);
     
-    //cout << *(tempCharA+1); //This works
     char* tempChar = cHiddenWord;
     while (*tempChar) {
         *tempChar = '-';
@@ -50,8 +52,7 @@ int main()
     cout << cFullWord << endl;
     cout << cHiddenWord << endl;
     
-    while (iWrongGuesses != 0) {
-
+    while (iWrongGuesses != 0 || iGuessedL != iTotalLetters) {
         cout << "Guess a letter for the word: \"" << cHiddenWord << "\"" << endl;
         cout << "You have " << iWrongGuesses << " wrong guesses left, and have guessed "
             << iGuessedL << " letters out of " << iTotalLetters << " so far." << endl;
@@ -63,35 +64,46 @@ int main()
         tempChar = cFullWord;
         char* tempCharH = cHiddenWord;
         char* tempCharA = alphabet;
+
         for (char const& c : sUserInput) {
             tempChar = cFullWord;
             tempCharH = cHiddenWord;
             tempCharA = alphabet;
-            while (*tempChar) {
-                if (*tempChar == c) {
-                    *tempCharH = c;
-                    iGuessedL++;
-                    while ((*tempCharA != c) && *tempCharA) {
-                        tempCharA++;
-                    }
-                    if (*tempCharA) {
-                        *tempCharA = '-';
-                    }
-                    tempCharA = alphabet;
-                }
-                tempChar++;
-                tempCharH++;
+
+            while ((*tempCharA != c) && *tempCharA) {
+                tempCharA++;
             }
+
+            if(*tempCharA) {
+                *tempCharA = '-';
+
+                while (*tempChar) {
+                    if (*tempChar == c) {
+                        *tempCharH = c;
+                        iGuessedL++;
+                        iWrongWordStatus = 0;
+                    }
+                    tempChar++;
+                    tempCharH++;
+                }   
+            }
+
             if (iWrongWordStatus == 1) {
                 iWrongGuesses--;
             }
+            
         }
         
         //This would close the program when all letters have been guessed
         if ((iGuessedL == iTotalLetters) || (iWrongGuesses == 0) ) {
-            return 0;
+            cout << "You have guessed the word !!! It is: " << cHiddenWord << endl;
+            cout << "You had " << iWrongGuesses << " wrong guesses left." << endl;
+            break;
         }      
     }
+    delete[] cHiddenWord;
+    delete[] cFullWord;
+    _CrtDumpMemoryLeaks();
     return 0;
 }
 
